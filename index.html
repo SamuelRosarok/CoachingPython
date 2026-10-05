@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Calcul des Proportions</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: inline-block; width: 150px; }
+        input { padding: 5px; width: 200px; }
+        button { padding: 10px 15px; background: #007bff; color: white; border: none; cursor: pointer; }
+        #resultat { margin-top: 20px; font-weight: bold; color: green; }
+    </style>
+</head>
+<body>
+
+    <h2>Formulaire de Proportions Corporelles</h2>
+    
+    <!-- Les inputs pour l'utilisateur -->
+    <div class="form-group"><label>Nom :</label><input type="text" id="nom"></div>
+    <div class="form-group"><label>Prénom :</label><input type="text" id="prenom"></div>
+    <div class="form-group"><label>Âge :</label><input type="number" id="age"></div>
+    <div class="form-group"><label>Taille (m) :</label><input type="number" step="0.01" id="taille"></div>
+    <div class="form-group"><label>Proportion Bras :</label><input type="number" step="0.01" id="bras"></div>
+    <div class="form-group"><label>Proportion Jambes :</label><input type="number" step="0.01" id="jambes"></div>
+    
+    <button onclick="envoyerDonnees()">Envoyer à l'API</button>
+
+    <div id="resultat"></div>
+
+    <script>
+        async function envoyerDonnees() {
+            // 1. Récupération des valeurs des inputs
+            const donneesFormulaire = {
+                nom: document.getElementById('nom').value,
+                prenom: document.getElementById('prenom').value,
+                age: parseInt(document.getElementById('age').value),
+                taille: parseFloat(document.getElementById('taille').value),
+                proportionBras: parseFloat(document.getElementById('bras').value),
+                proportionJambes: parseFloat(document.getElementById('jambes').value)
+            };
+
+            try {
+                // 2. Envoi des données vers votre API FastAPI avec fetch
+                const reponse = await fetch('http://127.0.0', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(donneesFormulaire)
+                });
+
+                const resultatJson = await reponse.json();
+                
+                // 3. Affichage du résultat reçu de Python
+                document.getElementById('resultat').innerText = 
+                    `Réponse API : ${resultatJson.nom_complet} - Somme des proportions : ${resultatJson.somme_proportions}`;
+            } catch (erreur) {
+                document.getElementById('resultat').innerText = "Erreur de connexion avec l'API.";
+                console.error(erreur);
+            }
+        }
+    </script>
+</body>
+</html>
