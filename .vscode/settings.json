@@ -6,5 +6,6 @@
             "name": "MaBase",
             "database": "./MaBase.db"
         }
-    ]
+    ],
+    "sqltools.useNodeRuntime": true
 }
