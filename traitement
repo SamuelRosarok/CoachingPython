@@ -1,0 +1,217 @@
+import pandas as pd
+from sqlalchemy import create_engine, text
+
+
+# ==========================================================
+# 1. PARAMÈTRES
+# ==========================================================
+
+file_path = r"C:\Users\samue\CoachingPython\Formulaire sans titre (réponses).xlsx"
+database_path = "MaBase.db"
+
+
+# ==========================================================
+# 2. LECTURE DU FICHIER EXCEL
+# ==========================================================
+
+df = pd.read_excel(file_path)
+
+print(f"{len(df)} lignes trouvées dans le fichier Excel.")
+
+
+# ==========================================================
+# 3. RENOMMAGE DES COLONNES
+# ==========================================================
+
+df = df.rename(columns={
+    "Horodateur": "horodateur",
+    "Score": "score",
+    "Prénom": "prenom",
+    "Nom": "nom",
+    "Age": "age",
+    "mail": "mail",
+    "Poids": "poids",
+    "Taille": "taille",
+
+    "Longueur bras ( haut de l'épaule jusqu'au bas des doigts) ( en cm)":
+        "longueur_bras",
+
+    "Longueur jambe ( bassin à la cheville)":
+        "longueur_jambe",
+
+    "Squat":
+        "squat",
+
+    "Bench( développé couché)":
+        "bench",
+
+    "Deadlift":
+        "deadlift",
+
+    "Arraché (Snatch)":
+        "snatch",
+
+    "Clean and jerk ( epaulé Jeté)":
+        "clean_and_jerk"
+})
+
+
+# ==========================================================
+# 4. REMPLACEMENT DES CELLULES VIDES PAR None
+# ==========================================================
+
+df = df.where(pd.notnull(df), None)
+
+
+# ==========================================================
+# 5. CONNEXION À LA BASE SQLITE
+# ==========================================================
+
+engine = create_engine(
+    f"sqlite:///{database_path}"
+)
+
+
+# ==========================================================
+# 6. CRÉATION DE LA TABLE
+# ==========================================================
+
+with engine.begin() as connection:
+
+    connection.execute(text("""
+        CREATE TABLE IF NOT EXISTS sportifs (
+
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+            horodateur TEXT,
+            score REAL,
+
+            prenom TEXT,
+            nom TEXT,
+            age INTEGER,
+            mail TEXT,
+
+            poids REAL,
+            taille REAL,
+
+            longueur_bras REAL,
+            longueur_jambe REAL,
+
+            squat REAL,
+            bench REAL,
+            deadlift REAL,
+
+            snatch REAL,
+            clean_and_jerk REAL,
+
+            UNIQUE(horodateur, mail)
+
+        )
+    """))
+
+
+# ==========================================================
+# 7. INSERTION DES DONNÉES
+# ==========================================================
+
+nouvelles_lignes = 0
+doublons = 0
+
+with engine.begin() as connection:
+
+    for _, row in df.iterrows():
+
+        query = text("""
+            INSERT OR IGNORE INTO sportifs (
+
+                horodateur,
+                score,
+                prenom,
+                nom,
+                age,
+                mail,
+                poids,
+                taille,
+                longueur_bras,
+                longueur_jambe,
+                squat,
+                bench,
+                deadlift,
+                snatch,
+                clean_and_jerk
+
+            )
+            VALUES (
+
+                :horodateur,
+                :score,
+                :prenom,
+                :nom,
+                :age,
+                :mail,
+                :poids,
+                :taille,
+                :longueur_bras,
+                :longueur_jambe,
+                :squat,
+                :bench,
+                :deadlift,
+                :snatch,
+                :clean_and_jerk
+
+            )
+        """)
+
+        result = connection.execute(
+            query,
+            {
+                "horodateur": (
+                    str(row["horodateur"])
+                    if row["horodateur"] is not None
+                    else None
+                ),
+
+                "score": row["score"],
+
+                "prenom": row["prenom"],
+                "nom": row["nom"],
+                "age": row["age"],
+                "mail": row["mail"],
+
+                "poids": row["poids"],
+                "taille": row["taille"],
+
+                "longueur_bras": row["longueur_bras"],
+                "longueur_jambe": row["longueur_jambe"],
+
+                "squat": row["squat"],
+                "bench": row["bench"],
+                "deadlift": row["deadlift"],
+
+                "snatch": row["snatch"],
+                "clean_and_jerk": row["clean_and_jerk"]
+            }
+        )
+
+        if result.rowcount == 1:
+            nouvelles_lignes += 1
+        else:
+            doublons += 1
+
+
+# ==========================================================
+# 8. AFFICHAGE DU RÉSULTAT
+# ==========================================================
+
+print()
+print("=" * 50)
+print("IMPORT TERMINÉ")
+print("=" * 50)
+
+print(f"Personnes/réponses dans Excel : {len(df)}")
+print(f"Nouvelles lignes ajoutées    : {nouvelles_lignes}")
+print(f"Doublons ignorés             : {doublons}")
+
+print("=" * 50)
+print(f"Base de données : {database_path}")
+print("=" * 50)
