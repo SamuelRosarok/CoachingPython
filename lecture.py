@@ -13,3 +13,5 @@ for personne in personnes:
     print("Deadlift :", personne["deadlift"])
     print("Snatch :", personne["snatch"])
     print("Clean and Jerk :", personne["clean_and_jerk"])
+
+#bonjour
