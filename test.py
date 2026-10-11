@@ -2,7 +2,7 @@ import sqlite3
 import pandas as pda
 import re
 
-df = pda.read_excel("R1.xlsx")
+#df = pda.read_excel("R1.xlsx")       # Réactiver uniquement quand je rajoute des données, je l'enleve pour enlever mes excels, et rester loin des infos types mail du excel de base
 
 # connection à ma base de données
 conn = sqlite3.connect("MaBase.db") 
