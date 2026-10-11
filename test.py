@@ -27,28 +27,28 @@ cursor = conn.cursor()
 #     )
 # """)
 
+#Début du travail excel
+# selection = df [[
+#     "Prénom",
+#     "Nom",
+#     "Age",
+#     "Poids",
+#     "Longueur bras ( haut de l'épaule jusqu'au bas des doigts) ( en cm)",
+#     "Longueur jambe ( bassin à la cheville)",
+#     "Squat",
+#     "Bench( développé couché)",
+#     "Deadlift",
+#     "Arraché (Snatch)",
+#     "Clean and jerk ( epaulé Jeté)"
+# ]]
 
-selection = df [[
-    "Prénom",
-    "Nom",
-    "Age",
-    "Poids",
-    "Longueur bras ( haut de l'épaule jusqu'au bas des doigts) ( en cm)",
-    "Longueur jambe ( bassin à la cheville)",
-    "Squat",
-    "Bench( développé couché)",
-    "Deadlift",
-    "Arraché (Snatch)",
-    "Clean and jerk ( epaulé Jeté)"
-]]
-
-selection.to_sql(
-    "utilisateurs_brut",
-    conn,
-    if_exists="replace",
-    index=False
-)
-
+# selection.to_sql(
+#     "utilisateurs_brut",
+#     conn,
+#     if_exists="replace",
+#     index=False
+# )
+#Fin travail excel
 
 
 
