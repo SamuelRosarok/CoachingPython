@@ -2,7 +2,7 @@ import sqlite3
 import pandas as pda
 import re
 
-df = pda.read_excel("Formulaire sans titre (réponses).xlsx")
+df = pda.read_excel("R1.xlsx")
 
 # connection à ma base de données
 conn = sqlite3.connect("MaBase.db") 
@@ -94,6 +94,8 @@ def nettoyer_poids(poids):  #Nettoyer les poids
 
     poids = poids.replace("kg", "").strip() #remplacer kg en espace puis supprimer les espaces
     poids = poids.replace(",", ".") #remplacer la virgule par un point
+    poids = re.sub(r"[^0-9,.]", "", poids)
+    poids = poids.replace(",", ".")
 
     poids = float(poids) 
 
@@ -135,8 +137,23 @@ def nettoyage_tableau(nom_table):  #nettoyage de toutes les colonnes de ma base
 
 nettoyage_tableau("utilisateurs_brut")
 
-print(df.columns.tolist())
 
+
+
+
+
+
+
+
+# Travail de valeur unique, et utilisation d'un moyen de débug
+# cursor.execute("""
+#     UPDATE utilisateurs_brut
+#     SET Squat = ?, "Clean and jerk ( epaulé Jeté)" = ?
+#     WHERE Prénom = ?
+# """, (168, 130, "Dino"))
+
+# print("Nombre de lignes modifiées :", cursor.rowcount) 
+# conn.commit()
 
 
 
