@@ -81,6 +81,46 @@ def nettoyer_poids(poids):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# poids_jacky = df.loc[df["Prénom"] == "Jacky", "Poids"]
+
+# true_poids_jacky = nettoyer_poids(poids_jacky.iloc[0])  # Utilisation de .iloc[0] pour obtenir la valeur réelle
+
+# cursor.execute(
+#     "  INSERT INTO utilisateurs3 (nom,poids) VALUES (?, ?)",
+#     ("Jacky", true_poids_jacky)
+#    )
+
+
+
+
+
+
+
+
+
+
+
 #(COmmentaire global Ctrl+ K +C) pour commenter un bloc de code
 # cursor.execute("""
 # DROP TABLE IF EXISTS sqlite_sequence
