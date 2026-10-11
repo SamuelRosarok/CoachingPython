@@ -105,14 +105,14 @@ def nettoyer_poids(poids):  #Nettoyer les poids
 def nettoyer_colonne(nom_table, nom_colonne, fonction_nettoyage): #nettoyer les colonnes 
 
     cursor.execute(
-        f'SELECT rowid, "{nom_colonne}" FROM "{nom_table}"'
+        f'SELECT rowid, "{nom_colonne}" FROM "{nom_table}"'  # Sélectionne ma colonne de ma table 
     )
-    lignes = cursor.fetchall()
+    lignes = cursor.fetchall() #Selection intérmediaire
 
-    for identifiant, valeur in lignes:
-        valeur_nettoyee = fonction_nettoyage(valeur)
+    for identifiant, valeur in lignes:        #Identifiant prend la valeur de row_id et valeur c'est ce que je trie
+        valeur_nettoyee = fonction_nettoyage(valeur)   #Mes nettoyages, toi même tu sais 
 
-        cursor.execute(
+        cursor.execute(  #puis je modifie ma base
             f'UPDATE "{nom_table}" '
             f'SET "{nom_colonne}" = ? WHERE rowid = ?',
             (valeur_nettoyee, identifiant)
@@ -120,10 +120,20 @@ def nettoyer_colonne(nom_table, nom_colonne, fonction_nettoyage): #nettoyer les 
 
     conn.commit()
 
-nettoyer_colonne("utilisateurs_brut", "Longueur jambe ( bassin à la cheville)", nettoyer_taille)
+def nettoyage_tableau(nom_table):  #nettoyage de toutes les colonnes de ma base
+    nettoyer_colonne(nom_table, "Poids", nettoyer_poids)
+    nettoyer_colonne(nom_table, "Longueur bras ( haut de l'épaule jusqu'au bas des doigts) ( en cm)", nettoyer_taille)
+    nettoyer_colonne(nom_table, "Longueur jambe ( bassin à la cheville)", nettoyer_taille)
+    nettoyer_colonne(nom_table, "Age", nettoyer_poids)
+    nettoyer_colonne(nom_table, "Squat", nettoyer_poids)
+    nettoyer_colonne(nom_table, "Bench( développé couché)", nettoyer_poids)
+    nettoyer_colonne(nom_table, "Deadlift", nettoyer_poids)
+    nettoyer_colonne(nom_table, "Arraché (Snatch)", nettoyer_poids)
+    nettoyer_colonne(nom_table, "Clean and jerk ( epaulé Jeté)", nettoyer_poids)
 
 
 
+nettoyage_tableau("utilisateurs_brut")
 
 print(df.columns.tolist())
 
